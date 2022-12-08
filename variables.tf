@@ -5,7 +5,7 @@ variable "cluster_name" {
 
 variable "cluster_version" {
   type    = string
-  default = "1.21"
+  default = "1.22"
 }
 
 variable "cidr" {
@@ -20,7 +20,7 @@ variable "private_subnets" {
 
 variable "public_subnets" {
   type    = list(string)
-  default = ["10.0.101.0/24", "10.0.102.0/24", "10.0.103.0/24"]
+  default = ["10.0.4.0/24", "10.0.5.0/24", "10.0.6.0/24"]
 }
 
 variable "azs" {
