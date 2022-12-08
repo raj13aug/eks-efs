@@ -47,7 +47,7 @@ resource "aws_security_group" "xac_airflow_efs_sg" {
     #cidr_blocks = module.vpc.private_subnets_cidr_blocks
   }
 
-  tags = "EFS SG"
+  tags = local.tags
 }
 
 ###############################################################################
