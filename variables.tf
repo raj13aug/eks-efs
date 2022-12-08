@@ -27,3 +27,15 @@ variable "azs" {
   type    = list(string)
   default = ["us-east-1a", "us-east-1b", "us-east-1c"]
 }
+
+variable "efs_name" {
+  type        = string
+  description = "EFS service name"
+  default     = "efs"
+}
+
+variable "aws_region" {
+  type        = string
+  description = "For AWS deployment - region name"
+  default     = "us-east-1"
+}
