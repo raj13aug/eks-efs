@@ -182,7 +182,7 @@ resource "helm_release" "efs_csi_driver" {
   }
 
   depends_on = [
-    aws_efs_mount_target.efs_target
+    aws_efs_mount_target.efs_target, module.eks
   ]
 
 }
