@@ -192,6 +192,9 @@ resource "kubernetes_storage_class_v1" "efs_sc" {
     name = "efs-sc"
   }
   storage_provisioner = "efs.csi.aws.com"
+  depends_on = [
+    aws_efs_mount_target.efs_target
+  ]
 }
 
 resource "kubernetes_persistent_volume_v1" "efs_pv" {
@@ -212,6 +215,9 @@ resource "kubernetes_persistent_volume_v1" "efs_pv" {
         volume_handle = aws_efs_file_system.efs.id
       }
     }
+    depends_on = [
+      aws_efs_mount_target.efs_target
+    ]
   }
 }
 
@@ -229,4 +235,7 @@ resource "kubernetes_persistent_volume_claim_v1" "efs_pvc" {
       }
     }
   }
+  depends_on = [
+    aws_efs_mount_target.efs_target
+  ]
 }
