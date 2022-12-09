@@ -139,12 +139,20 @@ resource "aws_iam_policy_attachment" "eks_efs_driver_attach" {
 ###############################################################################
 # modified from https://github.com/DNXLabs/terraform-aws-eks-efs-csi-driver
 
-resource "helm_release" "kubernetes_efs_csi_driver" {
-  name       = "aws-efs-csi-driver"
-  chart      = "aws-efs-csi-driver"
-  repository = "https://kubernetes-sigs.github.io/aws-efs-csi-driver/"
-  version    = "2.2.0"
-  namespace  = "kube-system"
+resource "helm_release" "efs_csi_driver" {
+
+  name = "efs-csi-driver"
+
+  namespace       = "kube-system"
+  cleanup_on_fail = true
+  force_update    = false
+
+  chart = "https://github.com/kubernetes-sigs/aws-efs-csi-driver/releases/download/helm-chart-aws-efs-csi-driver-2.2.7/aws-efs-csi-driver-2.2.7.tgz"
+
+  set {
+    name  = "image.repository"
+    value = "602401143452.dkr.ecr.us-east-1.amazonaws.com/eks/aws-efs-csi-driver"
+  }
 
   set {
     name  = "controller.serviceAccount.create"
@@ -158,7 +166,7 @@ resource "helm_release" "kubernetes_efs_csi_driver" {
 
   set {
     name  = "controller.serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
-    value = aws_iam_role.eks_efs_driver_role.arn
+    value = aws_iam_role.eks_efs_driver_role.arn #kubernetes_service_account.efs_csi_driver.metadata.0.name
   }
 
   set {
@@ -175,6 +183,11 @@ resource "helm_release" "kubernetes_efs_csi_driver" {
     name  = "node.serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
     value = aws_iam_role.eks_efs_driver_role.arn
   }
+
+  depends_on = [
+    aws_efs_mount_target.efs_target
+  ]
+
 }
 
 resource "kubernetes_storage_class_v1" "efs_storage_class" {
@@ -195,7 +208,7 @@ resource "kubernetes_storage_class_v1" "efs_storage_class" {
   }
 
   depends_on = [
-    helm_release.kubernetes_efs_csi_driver
+    helm_release.efs_csi_driver
   ]
 
 }
