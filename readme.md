@@ -13,8 +13,3 @@ Reference url :
 https://computingforgeeks.com/eks-persistent-storage-with-efs-aws-service/
 
 https://docs.aws.amazon.com/eks/latest/userguide/sec-group-reqs.html
-
-
-
-kubectl apply -f efs-writer.yaml
-kubectl apply -f efs-reader.yaml
