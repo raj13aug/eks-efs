@@ -11,17 +11,16 @@ resource "aws_efs_file_system" "efs" {
 }
 
 
-
 resource "aws_efs_mount_target" "efs_target" {
   count           = length(module.vpc.private_subnets)
   file_system_id  = aws_efs_file_system.efs.id
   subnet_id       = element(module.vpc.public_subnets, count.index)
-  security_groups = [aws_security_group.xac_airflow_efs_sg.id]
+  security_groups = [aws_security_group.efs_sg.id]
 }
 
-# https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group
+
 # EFS SG
-resource "aws_security_group" "xac_airflow_efs_sg" {
+resource "aws_security_group" "efs_sg" {
   name        = "xac_airflow_efs"
   description = "Allows inbound efs traffic from EKS"
   vpc_id      = module.vpc.vpc_id
@@ -35,8 +34,6 @@ resource "aws_security_group" "xac_airflow_efs_sg" {
     cidr_blocks = [module.vpc.vpc_cidr_block]
   }
 
-  # fix from https://github.com/aws-samples/aws-eks-accelerator-for-terraform/commit/e6b364d87221eb481d8e93b08bb9597c1e22bf3e
-  #
   egress {
     from_port = 0
     to_port   = 0
@@ -53,7 +50,7 @@ resource "aws_security_group" "xac_airflow_efs_sg" {
 ###############################################################################
 # Create an IAM policy and role
 ###############################################################################
-# based on https://github.com/DNXLabs/terraform-aws-eks-efs-csi-driver/blob/master/iam.tf
+
 
 data "aws_iam_policy_document" "efs_csi_driver" {
   statement {
@@ -137,7 +134,7 @@ resource "aws_iam_policy_attachment" "eks_efs_driver_attach" {
 ###############################################################################
 # Install the Amazon EFS driver
 ###############################################################################
-# modified from https://github.com/DNXLabs/terraform-aws-eks-efs-csi-driver
+
 
 resource "helm_release" "efs_csi_driver" {
 
