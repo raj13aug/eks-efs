@@ -215,10 +215,10 @@ resource "kubernetes_persistent_volume_v1" "efs_pv" {
         volume_handle = aws_efs_file_system.efs.id
       }
     }
-    depends_on = [
-      aws_efs_mount_target.efs_target
-    ]
   }
+  depends_on = [
+    aws_efs_mount_target.efs_target
+  ]
 }
 
 
