@@ -26,8 +26,7 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: efs-storage-claim
-  namespace: storage
+  name: efs-claim
 spec:
   accessModes:
     - ReadWriteMany
